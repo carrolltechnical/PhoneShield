@@ -6,10 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.ContactsContract;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.widget.Toast;
 import android.telephony.TelephonyManager;
+import android.telecom.Call;
+
+import com.internal.android.telephony.ITelephony;
 
 import java.lang.reflect.Method;
 
@@ -19,6 +24,7 @@ import java.lang.reflect.Method;
 
 public class Landing extends BroadcastReceiver {
     private ITelephony telephonyService;
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onReceive(Context context, Intent intent) {
         try {
@@ -33,17 +39,21 @@ public class Landing extends BroadcastReceiver {
 
 
 
+
+
+
             if(state.equals(TelephonyManager.EXTRA_STATE_RINGING)){
                 Toast.makeText(context,"Ringing State Number is -"+incomingNumber,Toast.LENGTH_SHORT).show();
 
-                TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
-                Class clazz = Class.forName(telephonyManager.getClass().getName());
-                Method method = clazz.getDeclaredMethod("getITelephony");
-                method.setAccessible(true);
-                ITelephony telephonyService = (ITelephony) method.invoke(telephonyManager);
-                telephonyService.endCall();
-
-                telephonyService.endCall();
+//                Call telephonyManager = (Call) context.getSystemService(Context.TELEPHONY_SERVICE);
+//                Class clazz = Class.forName(telephonyManager.getClass().getName());
+//                Method method = clazz.getDeclaredMethod("getITelephony");
+//                method.setAccessible(true);
+//                Call telephonyService = (Call) method.invoke(telephonyManager);
+//                telephonyManager.disconnect();
+                Call dc = new Call();
+                dc.disconnect();
+                //telephonyService.endCall();
             }
             if ((state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK))){
                 Toast.makeText(context,"Received State",Toast.LENGTH_SHORT).show();
